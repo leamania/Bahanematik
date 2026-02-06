@@ -29,7 +29,7 @@ with col2:
 if st.button("Bahaneyi Üret"):
     try:
         # Model Seçimi - En kararlı versiyon
-        model = genai.GenerativeModel('gemini-1.5-flash') 
+        model = genai.GenerativeModel('gemini-pro') 
         
         prompt = f"""
         Sen 'Geç Kaldım' uygulamasısın.
