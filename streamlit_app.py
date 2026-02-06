@@ -5,7 +5,7 @@ import google.generativeai as genai
 st.set_page_config(page_title="Geç Kaldım!", page_icon="🏃")
 
 # Başlık
-st.title("🏃 Geç Kaldım Generator")
+st.title("🏃 Bahanematik")
 st.write("Patrona yakalanmadan önce buradan bir yalan seç!")
 
 # API Key Kontrolü
