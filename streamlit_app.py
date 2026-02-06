@@ -1,27 +1,48 @@
 import streamlit as st
 import google.generativeai as genai
 
-st.title("🛠️ Model Bulucu")
+# Sayfa Ayarları
+st.set_page_config(page_title="Geç Kaldım!", page_icon="🏃")
+
+# Başlık
+st.title("🏃 Geç Kaldım Generator")
+st.write("Patrona yakalanmadan önce buradan bir yalan seç!")
 
 # API Key Kontrolü
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
 else:
-    st.error("API Key yok.")
+    st.error("API Key bulunamadı! Lütfen Secrets ayarlarını kontrol et.")
     st.stop()
 
-if st.button("Hangi Modellerim Açık?"):
+# Kullanıcı Girdileri
+col1, col2 = st.columns(2)
+with col1:
+    sure = st.selectbox("Ne kadar geciktin?", ["15 Dakika", "30 Dakika", "1 Saat", "Yarım Gün", "Bütün Gün Yokum"])
+    tema = st.selectbox("Bahane ne olsun?", ["Trafik/Yol", "Araba Arızası", "Hastalık", "Uyuya Kaldım (Gizle)", "Ev Tesisatı/Usta", "Ailevi Durum"])
+
+with col2:
+    patron = st.selectbox("Patronun Tipi Nasıl?", ["Sert/Takıntılı (Risk yok)", "Kurumsal/Beyaz Yaka (Resmi)", "Anlayışlı/Kanka (Samimi)", "Kaotik/Panik (Acil Durum)"])
+
+# Buton
+if st.button("Bahaneyi Üret"):
     try:
-        st.write("Google'ın senin için izin verdiği modeller:")
-        found = False
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                st.code(m.name) # Ekrana model ismini yazar
-                found = True
+        # SENİN LİSTENDEKİ EN UYGUN MODEL
+        model = genai.GenerativeModel('gemini-2.0-flash-lite') 
         
-        if not found:
-            st.error("Hiçbir model bulunamadı! API Key'in 'Generative Language' yetkisi kapalı olabilir.")
+        prompt = f"""
+        Sen 'Geç Kaldım' uygulamasısın.
+        Girdi: {sure} gecikme, {tema} konulu, {patron} tipinde patrona uygun Türkçe bahane.
+        Görev: Türkiye şartlarına uygun (trafik, metrobüs vb.) 2 seçenek üret.
+        Seçenek A (Garanti):
+        Seçenek B (Yaratıcı):
+        Sadece bu iki seçeneği çıktı olarak ver.
+        """
+        
+        with st.spinner('Yalanlar pişiriliyor...'):
+            response = model.generate_content(prompt)
+            st.write(response.text)
             
     except Exception as e:
-        st.error(f"Hata detayı: {e}")
+        st.error(f"Bir hata oluştu: {e}")
