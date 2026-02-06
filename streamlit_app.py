@@ -2,7 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 
 # Sayfa Ayarları
-st.set_page_config(page_title="Geç Kaldım!", page_icon="🏃")
+st.set_page_config(page_title="Bahanematik!", page_icon="🏃")
 
 # Başlık
 st.title("🏃 Bahanematik")
